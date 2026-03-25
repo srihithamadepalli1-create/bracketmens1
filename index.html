@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026 NCAA Tournament – Men's Sweet 16 Bracket</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --espn-red: #CC0000;
+    --espn-dark: #1a1a1a;
+    --espn-mid: #2d2d2d;
+    --espn-light: #3d3d3d;
+    --espn-border: #444;
+    --espn-yellow: #FFB300;
+    --espn-white: #f0f0f0;
+    --espn-muted: #888;
+    --winner-bg: #1e3a1e;
+    --winner-border: #2e7d32;
+    --winner-text: #81c784;
+    --connector: #555;
+  }
+
+  body {
+    background: var(--espn-dark);
+    color: var(--espn-white);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* ── HEADER ── */
+  .bracket-header {
+    background: linear-gradient(135deg, #111 0%, #1e1e1e 60%, #2a0000 100%);
+    border-bottom: 3px solid var(--espn-red);
+    padding: 18px 24px 14px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .espn-logo {
+    background: var(--espn-red);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: 0.3px;
+    padding: 5px 10px;
+    border-radius: 3px;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+  .header-divider {
+    width: 2px;
+    height: 32px;
+    background: #555;
+    flex-shrink: 0;
+  }
+  .header-text h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: 0.5px;
+    color: #fff;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+  .header-text p {
+    font-size: 12px;
+    color: var(--espn-muted);
+    margin-top: 3px;
+  }
+  .header-badge {
+    margin-left: auto;
+    background: var(--espn-red);
+    color: #fff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* ── BRACKET WRAPPER ── */
+  .bracket-outer {
+    padding: 24px 16px 40px;
+    overflow-x: auto;
+  }
+  .bracket-title-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 0 4px;
+  }
+  .round-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--espn-muted);
+    text-align: center;
+    flex: 1;
+  }
+  .bracket-grid {
+    display: flex;
+    gap: 0;
+    align-items: stretch;
+    min-width: 720px;
+  }
+
+  /* ── COLUMNS ── */
+  .col {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .col-s16  { width: 180px; flex-shrink: 0; }
+  .col-conn { width: 24px; flex-shrink: 0; }
+  .col-e8   { width: 180px; flex-shrink: 0; }
+  .col-conn2{ width: 24px; flex-shrink: 0; }
+  .col-f4   { width: 180px; flex-shrink: 0; }
+  .col-conn3{ width: 24px; flex-shrink: 0; }
+  .col-champ{ flex: 1; }
+
+  /* ── MATCHUP CARD ── */
+  .matchup {
+    border: 1px solid var(--espn-border);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--espn-mid);
+    cursor: pointer;
+    transition: border-color .15s;
+    position: relative;
+  }
+  .matchup:hover { border-color: #888; }
+
+  .team-row {
+    display: flex;
+    align-items: center;
+    padding: 6px 8px;
+    gap: 7px;
+    border-bottom: 1px solid #3a3a3a;
+    transition: background .12s;
+    cursor: pointer;
+    user-select: none;
+  }
+  .team-row:last-child { border-bottom: none; }
+  .team-row:hover { background: #383838; }
+  .team-row.winner {
+    background: var(--winner-bg);
+  }
+  .team-row.winner .team-name { color: var(--winner-text); font-weight: 600; }
+
+  .seed {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--espn-muted);
+    width: 16px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .team-logo {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 7px;
+    color: #fff;
+    flex-shrink: 0;
+    text-align: center;
+    line-height: 1.1;
+    padding: 1px;
+  }
+  .team-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--espn-white);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .team-score {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--espn-white);
+    width: 22px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+  .winner-check {
+    color: var(--winner-text);
+    font-size: 10px;
+    flex-shrink: 0;
+    opacity: 0;
+  }
+  .team-row.winner .winner-check { opacity: 1; }
+
+  /* Matchup label (time/date) */
+  .matchup-label {
+    font-size: 9px;
+    color: var(--espn-muted);
+    text-align: center;
+    padding: 3px 0;
+    background: #252525;
+    border-top: 1px solid #333;
+    letter-spacing: 0.4px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  .matchup-label.live {
+    color: var(--espn-red);
+    animation: pulse 1.4s infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+  /* ── SPACERS & CONNECTORS ── */
+  .spacer { flex: 1; }
+
+  /* Connector column SVG lines */
+  .conn-wrap {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+  }
+
+  /* ── REGION LABEL ── */
+  .region-divider {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--espn-red);
+    padding: 4px 8px;
+    margin-bottom: 6px;
+    border-left: 3px solid var(--espn-red);
+    background: #1f1010;
+  }
+
+  /* ── CHAMP BOX ── */
+  .champ-box {
+    border: 2px solid var(--espn-yellow);
+    border-radius: 6px;
+    padding: 14px 16px;
+    background: linear-gradient(145deg, #1c1800, #2a2200);
+    text-align: center;
+  }
+  .champ-trophy { font-size: 28px; margin-bottom: 8px; }
+  .champ-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--espn-yellow);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+  .champ-team {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+    padding: 8px 12px;
+    background: #2a2000;
+    border: 1px solid var(--espn-yellow);
+    border-radius: 4px;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    display: flex;
+    gap: 16px;
+    padding: 10px 16px;
+    background: #111;
+    border-top: 1px solid #333;
+    font-size: 11px;
+    color: var(--espn-muted);
+    flex-wrap: wrap;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 2px;
+  }
+  .dot-winner { background: var(--winner-border); }
+  .dot-tbd { background: #444; }
+
+  /* reset button */
+  .reset-btn {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid #555;
+    color: #aaa;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: border-color .15s, color .15s;
+  }
+  .reset-btn:hover { border-color: #aaa; color: #fff; }
+
+  /* instruction bar */
+  .instruction-bar {
+    background: #111;
+    border-bottom: 1px solid #2a2a2a;
+    padding: 6px 16px;
+    font-size: 11px;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .instruction-bar span { color: var(--espn-yellow); }
+
+  /* responsive */
+  @media (max-width: 768px) {
+    .bracket-outer { padding: 12px 8px 30px; }
+    .col-s16, .col-e8, .col-f4 { width: 150px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="bracket-header">
+  <div class="espn-logo">RICHLAND HS</div>
+  <div class="header-divider"></div>
+  <div class="header-text">
+    <h1>NCAA Tournament &mdash; Men's Bracket</h1>
+    <p>2026 March Madness &bull; Men's Sweet 16 &bull; Click a team to advance them</p>
+  </div>
+  <div class="header-badge">Sweet 16</div>
+</div>
+
+<div class="instruction-bar">
+  <span>&#9658;</span> Click any team name to pick a winner and advance them through the bracket.
+</div>
+
+<!-- MAIN BRACKET -->
+<div class="bracket-outer">
+
+  <div class="bracket-title-row">
+    <div class="round-label">Sweet 16</div>
+    <div class="round-label" style="width:24px;flex:none"></div>
+    <div class="round-label">Elite Eight</div>
+    <div class="round-label" style="width:24px;flex:none"></div>
+    <div class="round-label">Final Four</div>
+    <div class="round-label" style="width:24px;flex:none"></div>
+    <div class="round-label">Champion</div>
+  </div>
+
+  <div class="bracket-grid" id="bracketGrid">
+
+    <!-- ══════════ SWEET 16 COLUMN ══════════ -->
+    <div class="col col-s16" id="colS16">
+
+      <div class="region-divider">West Region</div>
+
+      <!-- W1: Texas vs Purdue -->
+      <div class="matchup" id="m1">
+        <div class="team-row" data-matchup="m1" data-slot="0" onclick="pickWinner(this)">
+          <span class="seed">11</span>
+          <div class="team-logo" style="background:#bf5700">TX</div>
+          <span class="team-name">Texas</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="team-row" data-matchup="m1" data-slot="1" onclick="pickWinner(this)">
+          <span class="seed">2</span>
+          <div class="team-logo" style="background:#CEB888">PUR</div>
+          <span class="team-name">Purdue</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="matchup-label">Thu Mar 27 · 7:10 PM ET · CBS</div>
+      </div>
+
+      <div class="spacer" style="min-height:8px"></div>
+
+      <!-- W2: Iowa vs Nebraska -->
+      <div class="matchup" id="m2">
+        <div class="team-row" data-matchup="m2" data-slot="0" onclick="pickWinner(this)">
+          <span class="seed">9</span>
+          <div class="team-logo" style="background:#FFCD00;color:#000">IOWA</div>
+          <span class="team-name">Iowa</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="team-row" data-matchup="m2" data-slot="1" onclick="pickWinner(this)">
+          <span class="seed">4</span>
+          <div class="team-logo" style="background:#e41c38">NEB</div>
+          <span class="team-name">Nebraska</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="matchup-label">Thu Mar 27 · 7:30 PM ET · TBS</div>
+      </div>
+
+      <div class="spacer" style="min-height:32px"></div>
+
+      <div class="region-divider">South Region</div>
+
+      <!-- S1: Arkansas vs Arizona -->
+      <div class="matchup" id="m3">
+        <div class="team-row" data-matchup="m3" data-slot="0" onclick="pickWinner(this)">
+          <span class="seed">4</span>
+          <div class="team-logo" style="background:#9D2235">ARK</div>
+          <span class="team-name">Arkansas</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="team-row" data-matchup="m3" data-slot="1" onclick="pickWinner(this)">
+          <span class="seed">1</span>
+          <div class="team-logo" style="background:#003366">ARIZ</div>
+          <span class="team-name">Arizona</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="matchup-label">Thu Mar 27 · 9:45 PM ET · CBS</div>
+      </div>
+
+      <div class="spacer" style="min-height:8px"></div>
+
+      <!-- S2: Illinois vs Houston -->
+      <div class="matchup" id="m4">
+        <div class="team-row" data-matchup="m4" data-slot="0" onclick="pickWinner(this)">
+          <span class="seed">3</span>
+          <div class="team-logo" style="background:#E84A27">ILL</div>
+          <span class="team-name">Illinois</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="team-row" data-matchup="m4" data-slot="1" onclick="pickWinner(this)">
+          <span class="seed">2</span>
+          <div class="team-logo" style="background:#C8102E">HOU</div>
+          <span class="team-name">Houston</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="matchup-label">Thu Mar 27 · 10:05 PM ET · TBS</div>
+      </div>
+
+      <div class="spacer" style="min-height:32px"></div>
+
+      <div class="region-divider">East Region</div>
+
+      <!-- E1: St John's vs Duke -->
+      <div class="matchup" id="m5">
+        <div class="team-row" data-matchup="m5" data-slot="0" onclick="pickWinner(this)">
+          <span class="seed">5</span>
+          <div class="team-logo" style="background:#990000">STJ</div>
+          <span class="team-name">St. John's</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="team-row" data-matchup="m5" data-slot="1" onclick="pickWinner(this)">
+          <span class="seed">1</span>
+          <div class="team-logo" style="background:#003087">DUKE</div>
+          <span class="team-name">Duke</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="matchup-label">Fri Mar 28 · 7:10 PM ET · CBS</div>
+      </div>
+
+      <div class="spacer" style="min-height:8px"></div>
+
+      <!-- E2: Alabama vs Michigan -->
+      <div class="matchup" id="m6">
+        <div class="team-row" data-matchup="m6" data-slot="0" onclick="pickWinner(this)">
+          <span class="seed">4</span>
+          <div class="team-logo" style="background:#9E1B32">ALA</div>
+          <span class="team-name">Alabama</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="team-row" data-matchup="m6" data-slot="1" onclick="pickWinner(this)">
+          <span class="seed">1</span>
+          <div class="team-logo" style="background:#00274C">MICH</div>
+          <span class="team-name">Michigan</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="matchup-label">Fri Mar 28 · 7:35 PM ET · TBS</div>
+      </div>
+
+      <div class="spacer" style="min-height:32px"></div>
+
+      <div class="region-divider">Midwest Region</div>
+
+      <!-- M1: Michigan State vs UConn -->
+      <div class="matchup" id="m7">
+        <div class="team-row" data-matchup="m7" data-slot="0" onclick="pickWinner(this)">
+          <span class="seed">3</span>
+          <div class="team-logo" style="background:#18453B">MSU</div>
+          <span class="team-name">Michigan St.</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="team-row" data-matchup="m7" data-slot="1" onclick="pickWinner(this)">
+          <span class="seed">2</span>
+          <div class="team-logo" style="background:#000E2F">UCON</div>
+          <span class="team-name">UConn</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="matchup-label">Fri Mar 28 · 9:45 PM ET · CBS</div>
+      </div>
+
+      <div class="spacer" style="min-height:8px"></div>
+
+      <!-- M2: Tennessee vs Iowa State -->
+      <div class="matchup" id="m8">
+        <div class="team-row" data-matchup="m8" data-slot="0" onclick="pickWinner(this)">
+          <span class="seed">6</span>
+          <div class="team-logo" style="background:#FF8200;color:#000">TENN</div>
+          <span class="team-name">Tennessee</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="team-row" data-matchup="m8" data-slot="1" onclick="pickWinner(this)">
+          <span class="seed">2</span>
+          <div class="team-logo" style="background:#C8102E">ISU</div>
+          <span class="team-name">Iowa State</span>
+          <span class="team-score"></span>
+          <span class="winner-check">✓</span>
+        </div>
+        <div class="matchup-label">Fri Mar 28 · 10:10 PM ET · TBS</div>
+      </div>
+
+    </div><!-- /col-s16 -->
+
+    <!-- ══════════ CONNECTOR 1 ══════════ -->
+    <div class="col col-conn" id="conn1">
+      <canvas id="connCanvas1" width="24"></canvas>
+    </div>
+
+    <!-- ══════════ ELITE EIGHT COLUMN ══════════ -->
+    <div class="col col-e8" id="colE8">
+
+      <!-- E8 W -->
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div class="matchup" id="e1">
+          <div class="team-row" data-matchup="e1" data-slot="0" onclick="pickWinner(this)">
+            <span class="seed" id="e1s0"></span>
+            <div class="team-logo" id="e1l0" style="background:#444">TBD</div>
+            <span class="team-name" id="e1n0">Winner W1</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="team-row" data-matchup="e1" data-slot="1" onclick="pickWinner(this)">
+            <span class="seed" id="e1s1"></span>
+            <div class="team-logo" id="e1l1" style="background:#444">TBD</div>
+            <span class="team-name" id="e1n1">Winner W2</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="matchup-label">Sat Mar 29 · Elite Eight</div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- E8 S -->
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div class="matchup" id="e2">
+          <div class="team-row" data-matchup="e2" data-slot="0" onclick="pickWinner(this)">
+            <span class="seed" id="e2s0"></span>
+            <div class="team-logo" id="e2l0" style="background:#444">TBD</div>
+            <span class="team-name" id="e2n0">Winner S1</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="team-row" data-matchup="e2" data-slot="1" onclick="pickWinner(this)">
+            <span class="seed" id="e2s1"></span>
+            <div class="team-logo" id="e2l1" style="background:#444">TBD</div>
+            <span class="team-name" id="e2n1">Winner S2</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="matchup-label">Sat Mar 29 · Elite Eight</div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- E8 E -->
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div class="matchup" id="e3">
+          <div class="team-row" data-matchup="e3" data-slot="0" onclick="pickWinner(this)">
+            <span class="seed" id="e3s0"></span>
+            <div class="team-logo" id="e3l0" style="background:#444">TBD</div>
+            <span class="team-name" id="e3n0">Winner E1</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="team-row" data-matchup="e3" data-slot="1" onclick="pickWinner(this)">
+            <span class="seed" id="e3s1"></span>
+            <div class="team-logo" id="e3l1" style="background:#444">TBD</div>
+            <span class="team-name" id="e3n1">Winner E2</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="matchup-label">Sun Mar 30 · Elite Eight</div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- E8 M -->
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div class="matchup" id="e4">
+          <div class="team-row" data-matchup="e4" data-slot="0" onclick="pickWinner(this)">
+            <span class="seed" id="e4s0"></span>
+            <div class="team-logo" id="e4l0" style="background:#444">TBD</div>
+            <span class="team-name" id="e4n0">Winner M1</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="team-row" data-matchup="e4" data-slot="1" onclick="pickWinner(this)">
+            <span class="seed" id="e4s1"></span>
+            <div class="team-logo" id="e4l1" style="background:#444">TBD</div>
+            <span class="team-name" id="e4n1">Winner M2</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="matchup-label">Sun Mar 30 · Elite Eight</div>
+        </div>
+      </div>
+
+    </div><!-- /col-e8 -->
+
+    <!-- ══════════ CONNECTOR 2 ══════════ -->
+    <div class="col col-conn2" id="conn2">
+      <canvas id="connCanvas2" width="24"></canvas>
+    </div>
+
+    <!-- ══════════ FINAL FOUR COLUMN ══════════ -->
+    <div class="col col-f4" id="colF4">
+
+      <!-- FF 1 (West/South) -->
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div class="matchup" id="f1">
+          <div class="team-row" data-matchup="f1" data-slot="0" onclick="pickWinner(this)">
+            <span class="seed" id="f1s0"></span>
+            <div class="team-logo" id="f1l0" style="background:#444">TBD</div>
+            <span class="team-name" id="f1n0">E8 West Winner</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="team-row" data-matchup="f1" data-slot="1" onclick="pickWinner(this)">
+            <span class="seed" id="f1s1"></span>
+            <div class="team-logo" id="f1l1" style="background:#444">TBD</div>
+            <span class="team-name" id="f1n1">E8 South Winner</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="matchup-label">Sat Apr 4 · Final Four · Indianapolis</div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- FF 2 (East/Midwest) -->
+      <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+        <div class="matchup" id="f2">
+          <div class="team-row" data-matchup="f2" data-slot="0" onclick="pickWinner(this)">
+            <span class="seed" id="f2s0"></span>
+            <div class="team-logo" id="f2l0" style="background:#444">TBD</div>
+            <span class="team-name" id="f2n0">E8 East Winner</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="team-row" data-matchup="f2" data-slot="1" onclick="pickWinner(this)">
+            <span class="seed" id="f2s1"></span>
+            <div class="team-logo" id="f2l1" style="background:#444">TBD</div>
+            <span class="team-name" id="f2n1">E8 Midwest Winner</span>
+            <span class="team-score"></span>
+            <span class="winner-check">✓</span>
+          </div>
+          <div class="matchup-label">Sat Apr 4 · Final Four · Indianapolis</div>
+        </div>
+      </div>
+
+    </div><!-- /col-f4 -->
+
+    <!-- ══════════ CONNECTOR 3 ══════════ -->
+    <div class="col col-conn3" id="conn3">
+      <canvas id="connCanvas3" width="24"></canvas>
+    </div>
+
+    <!-- ══════════ CHAMPION ══════════ -->
+    <div class="col col-champ" style="justify-content:center;display:flex;flex-direction:column;">
+      <div class="champ-box">
+        <div class="champ-trophy">🏆</div>
+        <div class="champ-title">2026 NCAA Champion</div>
+        <div class="champ-team" id="champTeam">—</div>
+        <div style="margin-top:8px;font-size:10px;color:#888;font-family:'Barlow Condensed',sans-serif;letter-spacing:0.5px;">Mon Apr 6 · Lucas Oil Stadium</div>
+      </div>
+    </div>
+
+  </div><!-- /bracket-grid -->
+</div><!-- /bracket-outer -->
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot dot-winner"></div> Picked Winner</div>
+  <div class="legend-item"><div class="legend-dot dot-tbd"></div> TBD / Not Yet Played</div>
+  <button class="reset-btn" onclick="resetBracket()">↺ Reset Bracket</button>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════
+   TEAM DATA
+═══════════════════════════════════════════════ */
+const TEAMS = {
+  m1: [
+    { name: 'Texas',     seed: 11, abbr: 'TEX', color: '#bf5700' },
+    { name: 'Purdue',    seed: 2,  abbr: 'PUR', color: '#CEB888', textColor: '#000' }
+  ],
+  m2: [
+    { name: 'Iowa',      seed: 9,  abbr: 'IOWA', color: '#FFCD00', textColor: '#000' },
+    { name: 'Nebraska',  seed: 4,  abbr: 'NEB', color: '#e41c38' }
+  ],
+  m3: [
+    { name: 'Arkansas',  seed: 4,  abbr: 'ARK', color: '#9D2235' },
+    { name: 'Arizona',   seed: 1,  abbr: 'ARIZ', color: '#003366' }
+  ],
+  m4: [
+    { name: 'Illinois',  seed: 3,  abbr: 'ILL', color: '#E84A27' },
+    { name: 'Houston',   seed: 2,  abbr: 'HOU', color: '#C8102E' }
+  ],
+  m5: [
+    { name: "St. John's", seed: 5, abbr: 'STJ', color: '#990000' },
+    { name: 'Duke',       seed: 1, abbr: 'DUKE', color: '#003087' }
+  ],
+  m6: [
+    { name: 'Alabama',   seed: 4,  abbr: 'ALA', color: '#9E1B32' },
+    { name: 'Michigan',  seed: 1,  abbr: 'MICH', color: '#00274C' }
+  ],
+  m7: [
+    { name: 'Michigan St.', seed: 3, abbr: 'MSU', color: '#18453B' },
+    { name: 'UConn',        seed: 2, abbr: 'UCN', color: '#000E2F' }
+  ],
+  m8: [
+    { name: 'Tennessee',   seed: 6, abbr: 'TENN', color: '#FF8200', textColor: '#000' },
+    { name: 'Iowa State',  seed: 2, abbr: 'ISU', color: '#C8102E' }
+  ]
+};
+
+/* Bracket progression map: which S16 game feeds which E8 slot */
+const S16_TO_E8 = {
+  m1: { e8: 'e1', slot: 0 },
+  m2: { e8: 'e1', slot: 1 },
+  m3: { e8: 'e2', slot: 0 },
+  m4: { e8: 'e2', slot: 1 },
+  m5: { e8: 'e3', slot: 0 },
+  m6: { e8: 'e3', slot: 1 },
+  m7: { e8: 'e4', slot: 0 },
+  m8: { e8: 'e4', slot: 1 }
+};
+const E8_TO_F4 = {
+  e1: { f4: 'f1', slot: 0 },
+  e2: { f4: 'f1', slot: 1 },
+  e3: { f4: 'f2', slot: 0 },
+  e4: { f4: 'f2', slot: 1 }
+};
+
+/* State */
+const picks = {};
+
+function pickWinner(el) {
+  const matchup = el.dataset.matchup;
+  const slot    = parseInt(el.dataset.slot);
+  const rows    = document.querySelectorAll(`[data-matchup="${matchup}"]`);
+
+  // Toggle off if already winner
+  if (el.classList.contains('winner')) {
+    el.classList.remove('winner');
+    delete picks[matchup];
+    propagateWinner(matchup, null);
+    return;
+  }
+
+  rows.forEach(r => r.classList.remove('winner'));
+  el.classList.add('winner');
+
+  // Figure out team data
+  let team;
+  if (TEAMS[matchup]) {
+    team = TEAMS[matchup][slot];
+  } else {
+    // It's an E8 or F4 slot — read from DOM
+    const nameEl = el.querySelector('.team-name');
+    const seedEl = el.querySelector('.seed');
+    const logoEl = el.querySelector('.team-logo');
+    team = {
+      name: nameEl.textContent,
+      seed: seedEl.textContent,
+      abbr: logoEl.textContent,
+      color: logoEl.style.background,
+      textColor: logoEl.style.color || '#fff'
+    };
+  }
+
+  picks[matchup] = { team, slot };
+  propagateWinner(matchup, team);
+}
+
+function propagateWinner(matchupId, team) {
+  // S16 → E8
+  if (S16_TO_E8[matchupId]) {
+    const { e8, slot } = S16_TO_E8[matchupId];
+    updateSlot(e8, slot, team);
+    // Clear downstream
+    if (!team) clearDownstream(e8, slot);
+  }
+  // E8 → F4
+  if (E8_TO_F4[matchupId]) {
+    const { f4, slot } = E8_TO_F4[matchupId];
+    updateSlot(f4, slot, team);
+    if (!team) clearDownstream(f4, slot);
+  }
+  // F4 → Champ
+  if (matchupId === 'f1' || matchupId === 'f2') {
+    const champEl = document.getElementById('champTeam');
+    if (!team) {
+      // Check if other f4 game has a winner feeding champ
+      // clear champ only if it came from this game
+      champEl.textContent = '—';
+    }
+  }
+}
+
+function updateSlot(matchupId, slot, team) {
+  const nameEl = document.getElementById(`${matchupId}n${slot}`);
+  const seedEl = document.getElementById(`${matchupId}s${slot}`);
+  const logoEl = document.getElementById(`${matchupId}l${slot}`);
+  const rows   = document.querySelectorAll(`[data-matchup="${matchupId}"]`);
+  const row    = rows[slot];
+
+  if (!nameEl) return;
+
+  if (team) {
+    nameEl.textContent  = team.name;
+    seedEl.textContent  = team.seed;
+    logoEl.textContent  = team.abbr || team.name.substring(0,3).toUpperCase();
+    logoEl.style.background = team.color || '#555';
+    logoEl.style.color      = team.textColor || '#fff';
+    row.style.opacity = '1';
+  } else {
+    // Determine default label
+    const defaults = {
+      e1: ['Winner W1','Winner W2'], e2: ['Winner S1','Winner S2'],
+      e3: ['Winner E1','Winner E2'], e4: ['Winner M1','Winner M2'],
+      f1: ['E8 West','E8 South'],    f2: ['E8 East','E8 Midwest']
+    };
+    nameEl.textContent  = (defaults[matchupId] || ['TBD','TBD'])[slot];
+    seedEl.textContent  = '';
+    logoEl.textContent  = 'TBD';
+    logoEl.style.background = '#444';
+    logoEl.style.color      = '#fff';
+    row.classList.remove('winner');
+    delete picks[matchupId];
+  }
+}
+
+function clearDownstream(matchupId, slot) {
+  // If we cleared a slot in a matchup, also clear whatever winner was set for that matchup
+  const rows = document.querySelectorAll(`[data-matchup="${matchupId}"]`);
+  const hadWinner = Array.from(rows).some(r => r.classList.contains('winner'));
+  if (!hadWinner) {
+    delete picks[matchupId];
+    // propagate null downstream
+    if (E8_TO_F4[matchupId]) {
+      const { f4, slot: fSlot } = E8_TO_F4[matchupId];
+      updateSlot(f4, fSlot, null);
+      clearDownstream(f4, fSlot);
+    }
+    if (matchupId === 'f1' || matchupId === 'f2') {
+      document.getElementById('champTeam').textContent = '—';
+    }
+  }
+}
+
+/* Special handler for Final Four → Champion */
+document.querySelectorAll('[data-matchup="f1"],[data-matchup="f2"]').forEach(row => {
+  const orig = row.onclick;
+  row.onclick = function(e) {
+    orig.call(this, e);
+    // After pick, update champ
+    const matchupId = this.dataset.matchup;
+    if (picks[matchupId]) {
+      const { team } = picks[matchupId];
+      // Only show champ when both f1 and f2 have picks? 
+      // ESPN-style: show champ pick once Final is set
+      // For now let user click a Final Four winner to set champ
+    }
+  };
+});
+
+// Override final four picks to advance to champ
+document.querySelectorAll('[data-matchup="f1"],[data-matchup="f2"]').forEach(row => {
+  row.onclick = function() {
+    const matchupId = this.dataset.matchup;
+    const slot = parseInt(this.dataset.slot);
+    const rows = document.querySelectorAll(`[data-matchup="${matchupId}"]`);
+
+    if (this.classList.contains('winner')) {
+      this.classList.remove('winner');
+      delete picks[matchupId];
+      document.getElementById('champTeam').textContent = '—';
+      return;
+    }
+
+    rows.forEach(r => r.classList.remove('winner'));
+    this.classList.add('winner');
+
+    const nameEl = this.querySelector('.team-name');
+    const team = { name: nameEl.textContent };
+    picks[matchupId] = { team, slot };
+
+    // Set champion if both semifinals have picks? 
+    // Actually for a bracket picker, picking a Final Four winner = national champ pick too
+    // Let's wire f1 & f2 to a separate champ matchup:
+    const champMatchup = 'champ';
+    if (matchupId === 'f1') updateSlot('champ', 0, team);
+    if (matchupId === 'f2') updateSlot('champ', 1, team);
+
+    // Simpler: just show whoever was last picked from any Final Four game as a "finalist"
+    // For UX, show champion only after both f1 and f2 are picked
+    const p1 = picks['f1'];
+    const p2 = picks['f2'];
+    if (p1 && p2) {
+      // don't auto-fill; let user see the box is still empty as reminder to "pick champ"
+    }
+  };
+});
+
+// Champ box — clicking a finalist picks them as champ
+// Instead, let's make Final Four game → champ more intuitive:
+// Clicking a team in f1 or f2 sets them as the champion directly
+// Re-override:
+document.querySelectorAll('[data-matchup="f1"],[data-matchup="f2"]').forEach(row => {
+  row.onclick = function() {
+    const matchupId = this.dataset.matchup;
+    const slot = parseInt(this.dataset.slot);
+    const rows = document.querySelectorAll(`[data-matchup="${matchupId}"]`);
+    const champEl = document.getElementById('champTeam');
+
+    if (this.classList.contains('winner')) {
+      this.classList.remove('winner');
+      delete picks[matchupId];
+      champEl.textContent = '—';
+      return;
+    }
+
+    rows.forEach(r => r.classList.remove('winner'));
+    this.classList.add('winner');
+
+    const nameEl = this.querySelector('.team-name');
+    picks[matchupId] = { team: { name: nameEl.textContent }, slot };
+    champEl.textContent = nameEl.textContent;
+    champEl.style.animation = 'none';
+    champEl.offsetHeight;
+    champEl.style.animation = 'champFlash .4s ease';
+  };
+});
+
+function resetBracket() {
+  // Clear all winner classes
+  document.querySelectorAll('.team-row.winner').forEach(r => r.classList.remove('winner'));
+  // Clear all picks
+  Object.keys(picks).forEach(k => delete picks[k]);
+  // Reset E8 slots
+  ['e1','e2','e3','e4'].forEach(id => {
+    const defaults = {
+      e1: ['Winner W1','Winner W2'], e2: ['Winner S1','Winner S2'],
+      e3: ['Winner E1','Winner E2'], e4: ['Winner M1','Winner M2']
+    };
+    [0,1].forEach(slot => {
+      const nameEl = document.getElementById(`${id}n${slot}`);
+      const seedEl = document.getElementById(`${id}s${slot}`);
+      const logoEl = document.getElementById(`${id}l${slot}`);
+      if (nameEl) { nameEl.textContent = defaults[id][slot]; seedEl.textContent = ''; logoEl.textContent = 'TBD'; logoEl.style.background = '#444'; }
+    });
+  });
+  // Reset F4 slots
+  const f4defaults = { f1: ['E8 West Winner','E8 South Winner'], f2: ['E8 East Winner','E8 Midwest Winner'] };
+  ['f1','f2'].forEach(id => {
+    [0,1].forEach(slot => {
+      const nameEl = document.getElementById(`${id}n${slot}`);
+      const seedEl = document.getElementById(`${id}s${slot}`);
+      const logoEl = document.getElementById(`${id}l${slot}`);
+      if (nameEl) { nameEl.textContent = f4defaults[id][slot]; seedEl.textContent = ''; logoEl.textContent = 'TBD'; logoEl.style.background = '#444'; }
+    });
+  });
+  document.getElementById('champTeam').textContent = '—';
+}
+
+/* ═══════════ CHAMP FLASH ANIMATION ═══════════ */
+const styleEl = document.createElement('style');
+styleEl.textContent = `
+@keyframes champFlash {
+  0%   { background: #5a4000; border-color: #ffd740; }
+  50%  { background: #3a2800; border-color: #FFB300; }
+  100% { background: #2a2000; border-color: var(--espn-yellow,#FFB300); }
+}`;
+document.head.appendChild(styleEl);
+</script>
+
+</body>
+</html>
